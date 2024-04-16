@@ -1,0 +1,109 @@
+.container {
+    align-items: center;
+    text-align: center;
+    margin-top: 50px;
+    width: 100%;
+}
+
+.container h5 {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.container img {
+    align-self: center;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+#audio-controls {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.audio-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.volume-bar {
+    position: relative;
+    width: 20px;
+    height: 150px;
+    background-color: #ccc;
+    overflow: hidden;
+}
+.volume-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #0f0;
+    transition: height 0.2s;
+}
+.volume-knob {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background-color: #333;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.file-name {
+font-size: 14px;
+width: 100px;
+white-space: nowrap;
+overflow: hidden;
+}
+.add-track {
+    background: rgba(49, 1, 1, 0.5);
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.5s;
+}
+
+.add-track::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+    border-radius: 50%;
+    transition: all 0.5s;
+}
+
+.add-track:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #0a0a0a;
+    border-bottom: 1px rgb(167, 149, 122, 0.6);
+    border-right: 1px black, 0.3;
+}
+
+.add-track:hover::before {
+    transform: translate(-30%, -30%);
+}
+
+footer {
+    background-color: #ffffff;
+    color: #5a5757;
+    margin-top: 100px;
+    padding: 20px;
+    width: 100%;
+  }
+  
+
+  
