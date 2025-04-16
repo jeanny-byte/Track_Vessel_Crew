@@ -1,65 +1,75 @@
 let audioControls = document.querySelectorAll('.audio-control');
     
 audioControls.forEach((control, index) => {
-    let audioPlayer = new Audio();
-    let playPauseButton = control.querySelector('.play-pause');
-    let volumeKnob = control.querySelector('.volume-knob');
-    let volumeFill = control.querySelector('.volume-fill');
-    let fileName = control.querySelector('.file-name');
-    let volumeBar = control.querySelector('.volume-bar');
-    let isDragging = false;
-    let fileInput = control.querySelector('.file-input');
-    
-    // Add Track button click event
-    control.querySelector('.add-track').addEventListener('click', function() {
-        fileInput.click();
-    });
+    const audio = new Audio();
+    audio.style.display = 'none';
+    control.appendChild(audio);
+    const addTrackBtn = control.querySelector('.add-track-btn');
+    const fileInput = control.querySelector('.file-input');
+    const trackNameSpan = control.querySelector('.track-name');
+    const [shuffleBtn, prevBtn, playBtn, nextBtn, repeatBtn] = control.querySelectorAll('.control-btn');
+    const progressBar = control.querySelector('.progress-bar');
+    const progressFill = control.querySelector('.progress-fill');
+    const progressKnob = control.querySelector('.progress-knob');
 
-    // File input change event
-    fileInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
+    // Add Track logic
+    addTrackBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
         if (file) {
-            const fileURL = URL.createObjectURL(file);
-            audioPlayer.src = fileURL;
-            fileName.textContent = `File: ${file.name}`;
+            audio.src = URL.createObjectURL(file);
+            audio.load();
+            playBtn.innerHTML = '&#9654;'; // Reset to play icon
+            trackNameSpan.textContent = file.name;
         }
     });
 
-    // Play/Pause button click event
-    playPauseButton.addEventListener('click', function() {
-        if (audioPlayer.paused) {
-            audioPlayer.play();
-            playPauseButton.textContent = 'Pause';
+    playBtn.addEventListener('click', () => {
+        if (audio.src) {
+            if (audio.paused) {
+                audio.play();
+                playBtn.innerHTML = '&#10073;&#10073;'; // Pause icon
+            } else {
+                audio.pause();
+                playBtn.innerHTML = '&#9654;'; // Play icon
+            }
         } else {
-            audioPlayer.pause();
-            playPauseButton.textContent = 'Play';
+            addTrackBtn.click(); // Prompt to add track if none loaded
         }
     });
 
-    // Volume control
-    volumeKnob.addEventListener('mousedown', function(event) {
-        isDragging = true;
-        updateVolume(event);
-    });
-
-    window.addEventListener('mousemove', function(event) {
-        if (isDragging) {
-            updateVolume(event);
+    audio.addEventListener('timeupdate', () => {
+        if (audio.duration) {
+            const percent = (audio.currentTime / audio.duration) * 100;
+            progressFill.style.width = `${percent}%`;
+            progressKnob.style.left = `${percent}%`;
+            console.log('Progress:', audio.currentTime, '/', audio.duration, percent);
         }
     });
 
-    window.addEventListener('mouseup', function() {
-        isDragging = false;
+    progressBar.addEventListener('click', (e) => {
+        const rect = progressBar.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percent = Math.max(0, Math.min(1, x / rect.width));
+        if (audio.duration) {
+            audio.currentTime = percent * audio.duration;
+        }
     });
 
-    function updateVolume(event) {
-        let boundingRect = volumeBar.getBoundingClientRect();
-        let volume = 1 - (event.clientY - boundingRect.top) / boundingRect.height;
-        volume = Math.max(0, Math.min(1, volume));
-        audioPlayer.volume = volume;
-        volumeFill.style.height = (volume * 100) + '%';
-        volumeKnob.style.bottom = (volume * 100) + '%';
-    }
+    prevBtn.addEventListener('click', () => {
+        audio.currentTime = 0;
+    });
+    nextBtn.addEventListener('click', () => {
+        audio.currentTime = audio.duration;
+    });
+    repeatBtn.addEventListener('click', () => {
+        audio.loop = !audio.loop;
+        repeatBtn.style.color = audio.loop ? '#ffd700' : '#fff';
+    });
+
+    shuffleBtn.addEventListener('click', () => {
+        alert('Shuffle clicked!');
+    });
 });
 
 function setCookie(name, value, days) {
